@@ -1,3 +1,6 @@
+from data_generation import *
+
+
 class Neuron:
     def __init__(self, weights, activation_func):
         self.weights = weights
@@ -27,29 +30,36 @@ class Neuron:
         return net
 
 
-def train(neuron, data):
+def train(neuron: Neuron, data: list[DataPoint]):
     max_steps = 1000
     speed = 0.001
-    results = []
 
+    training = True
     for i in range(0, max_steps):
+        error_count = 0
         for point in data:
             expected = point.class_type
             neuron_result = neuron.process([point.x, point.y, 1])
             error = expected - neuron_result
-            if error != 0:
-                for k in range(0, 2):
-                    neuron.weights[k] += speed * error * point.x
-                results.append(error)
-                print("error:" + str(error) + " neuron:" + str(neuron))
 
-        if len(results) == 0:
+            if error != 0:
+                print("error:" + str(error) + " neuron:" + str(neuron) + " point:" + str(point))
+                error_count += 1
+                neuron.weights[0] += speed * error * point.x
+                neuron.weights[1] += speed * error * point.y
+                neuron.weights[2] += speed * error
+
+        if error_count == 0:
+            print("Итерация " + str(i) + " закончилось обнулением ошибки, обучение закончено")
+            training = False
             break
         else:
-            results = []
-    if len(results) == 0:
-        print("Успех! Обучение закончилось обнулением ошибки")
-    else:
-        print("Провал! Обучение закончилось по таймауту")
+            print("Итерация " + str(i) + " закончилось, количество ошибок равно " + str(error_count))
+            error_count = 0
 
-    return neuron;
+    if training:
+        print("Провал! Обучение закончилось по таймауту")
+    else:
+        print("Успех! Обучение закончилось обнулением ошибки")
+    print("Итоговое состояние нейрона: " + str(neuron) + str(neuron.toLinear()))
+    return neuron
