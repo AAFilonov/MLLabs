@@ -15,13 +15,6 @@ class DataPoint:
     def __repr__(self):
         return str(self)
 
-def create_data(amount_of_points, func_y, interval_start_x=0, interval_end_x=100):
-    array = []
-
-    array += create_circle_of_points(int(amount_of_points / 2), -1, 70, 70, 25)
-    array += create_circle_of_points(int(amount_of_points / 2), 1, 30, 30, 25)
-
-    return array
 
 
 def create_circle_of_points(amount_of_points, type_class, circle_x, circle_y, circle_r):
