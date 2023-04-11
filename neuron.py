@@ -19,8 +19,8 @@ class Neuron:
         return self.activation_func(net)
 
     def toLinear(self):
-        a = self.weights[0] / self.weights[1]
-        b = self.weights[2] / self.weights[1]
+        a = -1 *self.weights[0] / self.weights[1]
+        b = -1 *self.weights[2] / self.weights[1]
         return (a, b)
 
     def sum_func(self, inputs):
