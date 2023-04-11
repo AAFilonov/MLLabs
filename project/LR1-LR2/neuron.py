@@ -1,5 +1,6 @@
 from data_generation import *
 
+
 def createNeuron(inputsCount: int, actvationFunc):
     weights = np.random.uniform(0, 1, inputsCount)
     return Neuron(weights, actvationFunc)
@@ -35,7 +36,54 @@ class Neuron:
         return net
 
 
-def train(neuron: Neuron, data: list[DataPoint]):
+def trainNeuronForRegression(neuron: Neuron, data: list[DataPoint], error_level: float):
+    max_steps = 1000
+    speed = 0.001
+
+    training = True
+    for i in range(0, max_steps):
+        error_quad_sum = 0
+        for point in data:
+            expected = point.y
+            neuron_result = neuron.process([point.x, 1])
+            error = expected - neuron_result
+
+            if error != 0:
+                #print("error:"+ str(error)+ " neuron:"+ str(neuron)+ " point:"+ str(point))
+                error_quad_sum += error * error
+                neuron.weights[0] += speed * error * point.x
+                neuron.weights[1] += speed * error
+
+        if error_quad_sum <= error_level:
+            print(
+                "Итерация "
+                + str(i)
+                + " закончилось достижением порога ошибки"
+                + str(error_level)
+                + ", обучение закончено"
+            )
+            training = False
+            break
+        else:
+            print(
+                "Итерация "
+                + str(i)
+                + " закончилось, сумма квадратов отклоений равна "
+                + str(error_quad_sum)
+            )
+            error_quad_sum = 0
+
+    if training:
+        print("Провал! Обучение закончилось по таймауту")
+    else:
+        print(
+            "Успех! Обучение закончилось достижением порога ошибки " + str(error_level)
+        )
+    print("Итоговое состояние нейрона: " + str(neuron))
+    return neuron
+
+
+def trainNeuronForClassififcation(neuron: Neuron, data: list[DataPoint]):
     max_steps = 1000
     speed = 0.001
 

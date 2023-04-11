@@ -2,22 +2,10 @@ from data_generation import *
 from neuron import *
 
 
-class NetParams:
-    def __init__(self, layersParams: list[int], activation_func):
-        self.weights = weights
-        self.activation_func = activation_func
-
-
 class NeuronNet:
     def __init__(self, inputCount):
         self.layers: list[list[Neuron]] = []
         self.inputCount = inputCount
-
-    def __str__(self):
-        return "neuron: {" + str(self.weights) + "}"
-
-    def __repr__(self):
-        return str(self)
 
     def addLayer(self, neuronCount: int, activationFunc: function):
         inputCountOfLayer = self.inputCount
@@ -28,9 +16,8 @@ class NeuronNet:
         newLayer = []
         for i in range(0, neuronCount):
             newLayer.append(createNeuron(inputCountOfLayer, activationFunc))
-            
-        self.layers.append(newLayer)
 
+        self.layers.append(newLayer)
 
     def process(self, inputs: list[float]) -> list[float]:
         if len(inputs) != self.inputCount:
@@ -47,3 +34,7 @@ class NeuronNet:
 
         # выход последнего слоя будет в previous_layer_output
         return previous_layer_output
+
+
+def trainNet(train_data: list[DataPoint], net: NeuronNet):
+    return net

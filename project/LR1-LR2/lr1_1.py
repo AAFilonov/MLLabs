@@ -3,27 +3,10 @@ from neuron import *
 import matplotlib.pyplot as plt
 
 
-def normalize(points) -> list[DataPoint]:
-    array = []
-    max_x = max(point.x for point in points)
-    min_x = min(point.x for point in points)
-    max_y = max(point.y for point in points)
-    min_y = min(point.y for point in points)
-    for point in points:
-        array.append(
-            DataPoint(
-                (point.x - min_x) / (max_x - min_x),
-                (point.y - min_y) / (max_y - min_y),
-                point.class_type
-
-            )
-        )
-
-    return array
-
-
 def create_plot(data: list[DataPoint], neuron: Neuron) -> None:
-    x_vals, y_vals, color_vals = zip(*[(float(i.x), float(i.y), i.class_type) for i in data])
+    x_vals, y_vals, color_vals = zip(
+        *[(float(i.x), float(i.y), i.class_type) for i in data]
+    )
     plt.scatter(x_vals, y_vals, c=color_vals)
 
     a, b = neuron.toLinear()
@@ -69,11 +52,11 @@ def HeavisideFunction(x: int):
         return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # np.random.seed(3)
     data = prepare_data(True)
 
     weights = np.random.uniform(0, 1, 3)
     neuron = Neuron(weights, HeavisideFunction)
-    train(neuron, data)
+    trainNeuronForClassififcation(neuron, data)
     create_plot(data, neuron)
