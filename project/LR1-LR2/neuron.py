@@ -1,12 +1,12 @@
 from data_generation import *
 
-def createNeuron(inputsCount: int, actvationFunc: function):
+def createNeuron(inputsCount: int, actvationFunc):
     weights = np.random.uniform(0, 1, inputsCount)
     return Neuron(weights, actvationFunc)
 
 
 class Neuron:
-    def __init__(self, weights: list[float], activation_func: function):
+    def __init__(self, weights: list[float], activation_func):
         self.weights = weights
         self.inputsCount = len(weights)
         self.activation_func = activation_func
