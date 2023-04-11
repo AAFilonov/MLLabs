@@ -1,5 +1,6 @@
 from data_generation import *
 from neuron import *
+from neuron_net import *
 import matplotlib.pyplot as plt
 
 
@@ -9,10 +10,8 @@ def create_plot(data: list[DataPoint], neuron: Neuron) -> None:
     )
     plt.scatter(x_vals, y_vals, c=color_vals)
 
-    a = neuron.weights[0]
-    b = neuron.weights[1]
     x_line_vals = [(float(x) * 0.01) for x in range(1, 100, 1)]
-    y_line_vals = [(a * x + b) for x in x_line_vals]
+    y_line_vals = [(net.process(x)) for x in x_line_vals]
 
     plt.plot(x_line_vals, y_line_vals)
 
@@ -22,7 +21,7 @@ def create_plot(data: list[DataPoint], neuron: Neuron) -> None:
 
 
 def linearFunction(x: int) -> int:
-    return -2 * x*x + 3*x +1
+    return -2 * x * x + 3 * x + 1
 
 
 def create_data(amount_of_points: int) -> list[DataPoint]:
@@ -46,9 +45,25 @@ def prepare_data(need_normalize: bool):
         data = raw_data
     return data
 
+def reLUFunc(x: int):
+    return max(0, x)
 
-def sigmoidFunc(x: int):
-    return x
+
+def reLU2Func(x: int):
+    return max(0.01*x, x)
+
+
+def reLUFuncPr(x: int):
+    if x < 0:
+        return 0
+    else:
+        return 1
+    
+def reLU2FuncPr(x: int):
+    if x < 0:
+        return 0.01
+    else:
+        return 1
 
 
 def linearFunc(x: int):
@@ -58,8 +73,12 @@ def linearFunc(x: int):
 if __name__ == "__main__":
     # np.random.seed(3)
     data = prepare_data(True)
+    net = NeuronNet(2)
+    net.addLayer(
+        2,
+        reLUFunc,
+    )
+    net.addLayer(1, linearFunc)
 
-    weights = np.random.uniform(0, 1, 2)
-    neuron = Neuron(weights, linearFunc)
-    trainNeuronForRegression(neuron, data, 0.1)
-    create_plot(data, neuron)
+    trainNetForRegression(net, data, 0.1)
+    create_plot(data, net)
