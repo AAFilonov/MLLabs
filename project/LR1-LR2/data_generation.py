@@ -38,7 +38,7 @@ def creat_point_in_circle(circle_x, circle_y, circle_r):
 
 
 def create_point_around_y_line(x, func_y):
-    disp = np.random.uniform(-1, 1) + 1
+    disp = np.random.normal() + 1
     return DataPoint(x, disp * func_y(x))
 
 
