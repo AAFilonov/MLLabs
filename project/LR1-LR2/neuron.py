@@ -1,9 +1,14 @@
 from data_generation import *
 
+def createNeuron(inputsCount: int, actvationFunc: function):
+    weights = np.random.uniform(0, 1, inputsCount)
+    return Neuron(weights, actvationFunc)
+
 
 class Neuron:
-    def __init__(self, weights, activation_func):
+    def __init__(self, weights: list[float], activation_func: function):
         self.weights = weights
+        self.inputsCount = len(weights)
         self.activation_func = activation_func
 
     def __str__(self):
@@ -12,15 +17,15 @@ class Neuron:
     def __repr__(self):
         return str(self)
 
-    def process(self, inputs):
+    def process(self, inputs: list[float]) -> float:
         if len(inputs) != len(self.weights):
             return None
         net = self.sum_func(inputs)
         return self.activation_func(net)
 
     def toLinear(self):
-        a = -1 *self.weights[0] / self.weights[1]
-        b = -1 *self.weights[2] / self.weights[1]
+        a = -1 * self.weights[0] / self.weights[1]
+        b = -1 * self.weights[2] / self.weights[1]
         return (a, b)
 
     def sum_func(self, inputs):
@@ -43,18 +48,34 @@ def train(neuron: Neuron, data: list[DataPoint]):
             error = expected - neuron_result
 
             if error != 0:
-                print("error:" + str(error) + " neuron:" + str(neuron) + " point:" + str(point))
+                print(
+                    "error:"
+                    + str(error)
+                    + " neuron:"
+                    + str(neuron)
+                    + " point:"
+                    + str(point)
+                )
                 error_count += 1
                 neuron.weights[0] += speed * error * point.x
                 neuron.weights[1] += speed * error * point.y
                 neuron.weights[2] += speed * error
 
         if error_count == 0:
-            print("Итерация " + str(i) + " закончилось обнулением ошибки, обучение закончено")
+            print(
+                "Итерация "
+                + str(i)
+                + " закончилось обнулением ошибки, обучение закончено"
+            )
             training = False
             break
         else:
-            print("Итерация " + str(i) + " закончилось, количество ошибок равно " + str(error_count))
+            print(
+                "Итерация "
+                + str(i)
+                + " закончилось, количество ошибок равно "
+                + str(error_count)
+            )
             error_count = 0
 
     if training:

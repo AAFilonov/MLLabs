@@ -33,8 +33,8 @@ def create_plot(data: list[DataPoint], neuron: Neuron) -> None:
 
     plt.plot(x_line_vals, y_line_vals)
 
-    # plt.xlim(min_lim, max_lim)
-    # plt.ylim(min_lim, max_lim)
+    plt.xlim(min_lim, max_lim)
+    plt.ylim(min_lim, max_lim)
     plt.show()
 
 
