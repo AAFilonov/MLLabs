@@ -1,16 +1,18 @@
 from data_generation import *
 
 
-def createNeuron(inputsCount: int, actvationFunc):
+def createNeuron(inputsCount: int, actvationFunc, activationFuncPr):
     weights = np.random.uniform(0, 1, inputsCount)
-    return Neuron(weights, actvationFunc)
+    return Neuron(weights, actvationFunc, activationFuncPr)
 
 
 class Neuron:
-    def __init__(self, weights: list[float], activation_func):
+    def __init__(self, weights: list[float], activation_func,activation_func_derivative ):
         self.weights = weights
         self.inputsCount = len(weights)
         self.activation_func = activation_func
+        self.activation_func_derivative = activation_func_derivative
+
 
     def __str__(self):
         return "neuron: {" + str(self.weights) + "}"

@@ -65,27 +65,51 @@ def trainNeuron(
     return
 
 
+NeuronIterationData = tuple[int, int, list[int]]
+
+
 def trainNetForRegression(train_data: list[DataPoint], net: NeuronNet, error_level):
     speed = 0.01
+    deltas: list[list[NeuronIterationData]] = []
+    for layerIndex, layer in net.layers:
+        for neuronIndex, neuron in layer:
+            layer_deltas.append(0)
 
     for layerIndex, layer in reversed(list(enumerate(net.layers))):
+        layer_deltas = []
         for neuronIndex, neuron in layer:
+            delta = 0
+            out = 0
             for point in train_data:
                 expected = point.y
                 prev_layer_output = net.processUpToLayer([point.x, 1], layerIndex)
                 if layerIndex == len(net.layers):
                     # последний слой
-                    y = neuron.process(prev_layer_output)
+                    out = neuron.process(prev_layer_output)
                     error = expected - y
-                    delta = error * neuron.activation_func2(y)
-                    neuron.delta = delta
+                    delta = error * neuron.activation_func_derivative(y)
                 else:
+                    # не последний слой
                     sum_child_delta = 0
-                    for child in net.layers[layerIndex + 1]:
-                        sum_child_delta += child.delta * child.weihts[neuronIndex]
-                    y = neuron.process(prev_layer_output)
-                    delta = neuron.activation_func2(y) * sum_child_delta
-                    neuron.delta = delta
-    #TODO в итерации = обновление весов
-    #TODO обновление выход из алгоритма обучения
+                    for childIndex, child in net.layers[layerIndex + 1]:
+                        sum_child_delta += (
+                            deltas[layerIndex + 1][childIndex][0]
+                            * child.weihts[neuronIndex]
+                        )
+                    out = neuron.process(prev_layer_output)
+                    delta = neuron.activation_func_derivative(y) * sum_child_delta
+            layer_deltas.append((delta, out, prev_layer_output))
+        deltas.append(layer_deltas)
+
+    for layerIndex, layer in net.layers:
+        for neuronIndex, neuron in layer:
+            data = deltas[layerIndex][neuronIndex]
+            delta = data[0]
+            out = data[1]
+            inputs = data[2]
+            for weightIndex, weight in neuron.weights:
+                weight = weight - speed*delta*out*inputs[weightIndex]
+
+    # TODO в итерации = обновление весов
+    # TODO обновление выход из алгоритма обучения
     return net
