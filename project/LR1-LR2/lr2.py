@@ -4,7 +4,7 @@ from neuron_net import *
 import matplotlib.pyplot as plt
 
 
-def create_plot(data: list[DataPoint], neuron: Neuron) -> None:
+def create_plot(data: list[DataPoint], net) -> None:
     x_vals, y_vals, color_vals = zip(
         *[(float(i.x), float(i.y), i.class_type) for i in data]
     )
@@ -20,14 +20,18 @@ def create_plot(data: list[DataPoint], neuron: Neuron) -> None:
     plt.show()
 
 
-def linearFunction(x: int) -> int:
-    return -2 * x * x + 3 * x + 1
+def cubeFunction(x: float) -> float:
+    return 1*x * x - 100*x
+
+
+def squareFunction(x: float) -> float:
+    return x * x + 3 * x - 3
 
 
 def create_data(amount_of_points: int) -> list[DataPoint]:
     array = []
 
-    array += create_line_of_points(amount_of_points, 1, linearFunction)
+    array += create_line_of_points(amount_of_points, 1, squareFunction)
 
     return array
 
@@ -45,17 +49,18 @@ def prepare_data(need_normalize: bool):
         data = raw_data
     return data
 
+
 def sigmoidFunc(x: int):
-    return 1/(1+ math.exp(-x))
+    return 1 / (1 + math.exp(-x))
 
 
 def sigmoidFuncPR(x: int):
-    return sigmoidFunc(x)*(1-sigmoidFunc(x))
-
+    return sigmoidFunc(x) * (1 - sigmoidFunc(x))
 
 
 def reLU2Func(x: int):
     return max(0.01 * x, x)
+
 
 def reLU2FuncPr(x: int):
     if x < 0:
@@ -63,18 +68,36 @@ def reLU2FuncPr(x: int):
     else:
         return 1
 
+
 def summrFunc(x: int):
     return x
+
 
 def summFuncPr(x: int):
     return 1
 
-if __name__ == "__main__":
-    # np.random.seed(3)
+
+def main_square():
+    np.random.seed(3)
     data = prepare_data(True)
-    net = NeuronNet(2) 
-    net.addLayer(2, sigmoidFunc, sigmoidFuncPR)
+    net = NeuronNet(2)
+    net.addLayer(1, sigmoidFunc, sigmoidFuncPR)
     net.addLayer(1, summrFunc, summFuncPr)
 
-    trainNetForRegression(data, net, 0.5, 4000)
+    trainNetForRegression(data, net, 0.001, 4000, 0.3)
     create_plot(data, net)
+
+
+def main_cube():
+    data = prepare_data(True)
+    net = NeuronNet(2)
+    net.addLayer(4, sigmoidFunc, sigmoidFuncPR)
+    net.addLayer(1, summrFunc, summFuncPr)
+
+    trainNetForRegression(data, net, 0.001, 4000, 0.2)
+    create_plot(data, net)
+
+
+if __name__ == "__main__":
+    main_square()
+    #main_cube()

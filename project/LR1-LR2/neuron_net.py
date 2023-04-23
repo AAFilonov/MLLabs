@@ -56,25 +56,15 @@ class NeuronNet:
         return previous_layer_output
 
 
-def trainNeuron(
-    neuron: Neuron,
-    layerIndex: int,
-    train_data: list[DataPoint],
-    net: NeuronNet,
-    error_level: float,
-) -> None:
-    return
-
-
-NeuronIterationData = tuple[int, int, list[int]]
+NeuronIterationData = tuple[float, float, list[float]]
 
 
 def trainNetForRegression(
-    train_data: list[DataPoint], net: NeuronNet, error_level , max_iterarions
+        train_data: list[DataPoint], net: NeuronNet, error_level, max_iterarions, speed: float
 ) -> NeuronNet:
     previous_error = 10000000000000
     for i in range(0, max_iterarions):
-        net, error = do_iteration(train_data, net)
+        net, error = do_iteration(train_data, net, speed)
         if error <= error_level:
             print(
                 "Успех, алгоритм закончился достижемнием порога "
@@ -104,9 +94,8 @@ def trainNetForRegression(
 
 
 def do_iteration(
-    train_data: list[DataPoint], net: NeuronNet
+        train_data: list[DataPoint], net: NeuronNet, speed: float
 ) -> tuple[NeuronNet, float]:
-    speed = 0.001
     iteration_error = 0
     deltas: list[list[NeuronIterationData]] = []
     for layerIndex in range(0, len(net.layers)):
@@ -118,7 +107,6 @@ def do_iteration(
 
     for point in train_data:
         for layerIndex, layer in reversed(list(enumerate(net.layers))):
-            layer_deltas = []
             for neuronIndex, neuron in enumerate(layer):
                 delta = 0
                 out = 0
@@ -135,13 +123,13 @@ def do_iteration(
                     sum_child_delta = 0
                     for childIndex, child in enumerate(net.layers[layerIndex + 1]):
                         sum_child_delta += (
-                            deltas[layerIndex + 1][childIndex][0]
-                            * child.weights[neuronIndex]
+                                deltas[layerIndex + 1][childIndex][0]
+                                * child.weights[neuronIndex]
                         )
                     out = neuron.process(prev_layer_output)
                     delta = neuron.activation_func_derivative(out) * sum_child_delta
                 deltas[layerIndex][neuronIndex] = (delta, out, prev_layer_output)
-            # layer_deltas.append((delta, out, prev_layer_output))
+
         for layerIndex, layer in enumerate(net.layers):
             for neuronIndex, neuron in enumerate(layer):
                 data = deltas[layerIndex][neuronIndex]
@@ -150,11 +138,9 @@ def do_iteration(
                 inputs = data[2]
                 for weightIndex, weight in enumerate(neuron.weights):
                     neuron.weights[weightIndex] = (
-                        weight - speed * delta * out * inputs[weightIndex]
-                    )   
-        # deltas.append(layer_deltas)
-
-   
+                            weight - speed * delta * out * inputs[weightIndex]
+                    )
+                    # deltas.append(layer_deltas)
 
     # TODO обновление выход из алгоритма обучения
-    return (net, iteration_error)
+    return net, iteration_error

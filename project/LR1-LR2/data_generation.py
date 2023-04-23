@@ -38,7 +38,7 @@ def creat_point_in_circle(circle_x, circle_y, circle_r):
 
 
 def create_line_of_points(
-    amount_of_points: int, type_class: int, func_y: Callable[[int], int]
+    amount_of_points: int, type_class: int, func_y: Callable[[float], float]
 ):
     array = []
     for i in range(0, int(amount_of_points)):
@@ -48,8 +48,8 @@ def create_line_of_points(
     return array
 
 
-def create_point_around_y_line(x: int, func_y: Callable[[int], int]):
-    disp = np.random.normal(0,1000)
+def create_point_around_y_line(x: int, func_y: Callable[[float], float]):
+    disp = np.random.normal(0,300)
     return DataPoint(x, disp + func_y(x))
 
 
