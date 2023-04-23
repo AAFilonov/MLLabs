@@ -11,7 +11,7 @@ def create_plot(data: list[DataPoint], neuron: Neuron) -> None:
     plt.scatter(x_vals, y_vals, c=color_vals)
 
     x_line_vals = [(float(x) * 0.01) for x in range(1, 100, 1)]
-    y_line_vals = [(net.process(x)) for x in x_line_vals]
+    y_line_vals = [(net.process([x, 1])) for x in x_line_vals]
 
     plt.plot(x_line_vals, y_line_vals)
 
@@ -45,40 +45,36 @@ def prepare_data(need_normalize: bool):
         data = raw_data
     return data
 
-def reLUFunc(x: int):
-    return max(0, x)
+def sigmoidFunc(x: int):
+    return 1/(1+ math.exp(-x))
+
+
+def sigmoidFuncPR(x: int):
+    return sigmoidFunc(x)*(1-sigmoidFunc(x))
+
 
 
 def reLU2Func(x: int):
-    return max(0.01*x, x)
+    return max(0.01 * x, x)
 
-
-def reLUFuncPr(x: int):
-    if x < 0:
-        return 0
-    else:
-        return 1
-    
 def reLU2FuncPr(x: int):
     if x < 0:
         return 0.01
     else:
         return 1
 
-
-def linearFunc(x: int):
+def summrFunc(x: int):
     return x
 
+def summFuncPr(x: int):
+    return 1
 
 if __name__ == "__main__":
     # np.random.seed(3)
     data = prepare_data(True)
-    net = NeuronNet(2)
-    net.addLayer(
-        2,
-        reLUFunc,
-    )
-    net.addLayer(1, linearFunc)
+    net = NeuronNet(2) 
+    net.addLayer(2, sigmoidFunc, sigmoidFuncPR)
+    net.addLayer(1, summrFunc, summFuncPr)
 
-    trainNetForRegression(net, data, 0.1)
+    trainNetForRegression(data, net, 0.5, 4000)
     create_plot(data, net)
