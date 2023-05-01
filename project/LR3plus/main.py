@@ -22,8 +22,13 @@ def create_plot(data: list[DataPoint], net) -> None:
     plt.show()
 
 
+def create_plot2(x_vals: list[float], y_vals: list[float], labels) -> None:
+    plt.scatter(x_vals, y_vals, c=labels)
+    plt.show()
+
+
 def cubeFunction(x: float) -> float:
-    return 1*x * x - 100*x
+    return 1 * x * x - 100 * x
 
 
 def squareFunction(x: float) -> float:
@@ -50,25 +55,63 @@ def prepare_data(need_normalize: bool):
     return data
 
 
+def define_model():
+    model = tf.keras.Sequential([
+        #layers.Dense(2, input_shape=[2], activation='tanh'),
+        layers.Dense(1, input_shape=[2], activation=tf.keras.activations.sigmoid),
+        layers.Dense(1, activation='softmax')
+    ])
+    return model
+
+
+def createData(size:int):
+    data = []
+    data += create_circle_of_points(int(size / 2), 0, 30, 70, 25)
+    data += create_circle_of_points(int(size / 2), 1, 70, 30, 25)
+    x_vals, y_vals, color_vals = zip(
+        *[(float(i.x), float(i.y), i.class_type) for i in data]
+    )
+
+
+    return x_vals, y_vals, color_vals
 
 
 if __name__ == '__main__':
-    model = tf.keras.Sequential([
-        # Добавляем полносвязный слой с 64 узлами к модели:
-        layers.Dense(1, activation=tf.keras.activations.sigmoid),
-        # Добавляем другой:
-        layers.Dense(1, activation='softmax'),
-        # Добавляем слой softmax с 10 выходами:
-        layers.Dense(10, activation='softmax')])
-
-    model.compile(optimizer=tf.keras.optimizers.Adam(0.01),
-                  loss='categorical_crossentropy',
-                  metrics=['accuracy'])
-    train_data = prepare_data(True)
-    test_data = prepare_data(True)
-
-    model.fit(data, labels, epochs=10, batch_size=32)
 
 
-    create_plot(data, None)
 
+    x_train, y_train, label_train = createData(100)
+    x_y_train_data = []
+    for i in range(0, 100):
+        arr = []
+        arr.append(x_train[i])
+        arr.append(y_train[i])
+        x_y_train_data.append(arr)
+    plt.scatter(x=x_train, y=y_train, c=label_train)
+    plt.show()
+
+
+    model = define_model()
+    model.compile(optimizer=tf.keras.optimizers.SGD(0.01),
+                  loss=tf.keras.losses.mean_squared_error,
+                  metrics=['accuracy'],
+                  run_eagerly=True)
+    model.fit(x=x_y_train_data, y=label_train, epochs=100, batch_size=10)
+
+    # С массивом Numpy
+    data = np.random.random((100, 1))
+    labels = np.random.random((100, 10))
+
+
+    x_test, y_test, label_test = createData(100)
+    x_y_test_data = []
+    for i in range(0, 100):
+        arr = []
+        arr.append(x_train[i])
+        arr.append(y_train[i])
+        x_y_test_data.append(arr)
+
+    t = model.predict(x_y_test_data)
+
+    #plt.scatter(x=x_train, y=y_train, c=label_train)
+    print(t)
