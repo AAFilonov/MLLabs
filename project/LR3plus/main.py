@@ -88,13 +88,13 @@ if __name__ == '__main__':
         arr.append(y_train[i])
         x_y_train_data.append(arr)
     plt.scatter(x=x_train, y=y_train, c=label_train)
-    plt.show()
+   # plt.show()
 
 
     model = define_model()
     model.compile(optimizer=tf.keras.optimizers.SGD(0.01),
-                  loss=tf.keras.losses.mean_squared_error,
-                  metrics=['accuracy'],
+                  loss=tf.keras.losses.binary_crossentropy,
+                  metrics=tf.keras.metrics.binary_crossentropy,
                   run_eagerly=True)
     model.fit(x=x_y_train_data, y=label_train, epochs=100, batch_size=10)
 
@@ -112,6 +112,8 @@ if __name__ == '__main__':
         x_y_test_data.append(arr)
 
     t = model.predict(x_y_test_data)
+    score = model.evaluate(x_y_test_data,)
 
     #plt.scatter(x=x_train, y=y_train, c=label_train)
     print(t)
+    print(score)
