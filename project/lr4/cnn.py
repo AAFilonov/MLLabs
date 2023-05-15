@@ -37,7 +37,7 @@ model = keras.Sequential([
 
     # тут могут быть скрытые полносвязные слои с функцией активации ReLU
 
-    Dense(10, activation='softmax')
+    Dense(10, activation='softmax'),
 ])
 
 print(model.summary())

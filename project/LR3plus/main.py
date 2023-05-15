@@ -58,7 +58,7 @@ def prepare_data(need_normalize: bool):
 def define_model():
     model = tf.keras.Sequential([
         #layers.Dense(2, input_shape=[2], activation='tanh'),
-        layers.Dense(1, input_shape=[2], activation=tf.keras.activations.sigmoid),
+        layers.Dense(1, input_shape=[2], activation=tf.keras.activations.relu),
     ])
     return model
 
