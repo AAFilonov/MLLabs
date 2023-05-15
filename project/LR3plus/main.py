@@ -59,7 +59,6 @@ def define_model():
     model = tf.keras.Sequential([
         #layers.Dense(2, input_shape=[2], activation='tanh'),
         layers.Dense(1, input_shape=[2], activation=tf.keras.activations.sigmoid),
-        layers.Dense(1, activation='softmax')
     ])
     return model
 
@@ -77,9 +76,6 @@ def createData(size:int):
 
 
 if __name__ == '__main__':
-
-
-
     x_train, y_train, label_train = createData(100)
     x_y_train_data = []
     for i in range(0, 100):
@@ -88,11 +84,11 @@ if __name__ == '__main__':
         arr.append(y_train[i])
         x_y_train_data.append(arr)
     plt.scatter(x=x_train, y=y_train, c=label_train)
-   # plt.show()
+    plt.show()
 
 
     model = define_model()
-    model.compile(optimizer=tf.keras.optimizers.SGD(0.01),
+    model.compile(optimizer=tf.keras.optimizers.Adam(0.01),
                   loss=tf.keras.losses.binary_crossentropy,
                   metrics=tf.keras.metrics.binary_crossentropy,
                   run_eagerly=True)
@@ -114,6 +110,7 @@ if __name__ == '__main__':
     t = model.predict(x_y_test_data)
     score = model.evaluate(x_y_test_data,)
 
-    #plt.scatter(x=x_train, y=y_train, c=label_train)
+    plt.scatter(x=x_train, y=y_train, c=label_train)
+    plt.show()
     print(t)
     print(score)
