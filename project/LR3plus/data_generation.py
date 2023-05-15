@@ -49,7 +49,7 @@ def create_line_of_points(
 
 
 def create_point_around_y_line(x: int, func_y: Callable[[float], float]):
-    disp = np.random.normal(0,300)
+    disp = np.random.normal(0,4)
     return DataPoint(x, disp + func_y(x))
 
 
