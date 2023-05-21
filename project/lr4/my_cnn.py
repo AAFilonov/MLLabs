@@ -86,7 +86,7 @@ model = keras.Sequential([
 
     # тут могут быть скрытые полносвязные слои с функцией активации ReLU
 
-    # Dense(64, activation='relu'),
+    Dense(128, activation='relu'),
     Dense(10, activation='softmax'),
 ])
 

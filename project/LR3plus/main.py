@@ -93,7 +93,7 @@ def createData2(size: int):
 def define_model():
     model = tf.keras.Sequential([
         # layers.Dense(2, input_shape=[2], activation='tanh'),
-        layers.Dense(5, activation=tf.keras.activations.sigmoid),
+        layers.Dense(10, input_shape=[2],  activation=tf.keras.activations.relu),
         layers.Dense(1, activation=tf.keras.activations.sigmoid),
     ])
     return model
@@ -118,11 +118,11 @@ if __name__ == '__main__':
 
 
     model = define_model()
-    model.compile(optimizer=tf.keras.optimizers.Adam(0.0005),
+    model.compile(optimizer=tf.keras.optimizers.Adam(0.005),
                   loss=tf.keras.losses.binary_crossentropy,
                   metrics=tf.keras.metrics.binary_crossentropy,
                   run_eagerly=True)
-    model.fit(x=x_y_train_data, y=label_train, epochs=2000, batch_size=100)
+    model.fit(x=x_y_train_data, y=label_train, epochs=500, batch_size=100)
     train_result = model.predict(x_y_train_data)
     print(train_result)
     for i, r in enumerate(train_result):
@@ -157,10 +157,10 @@ if __name__ == '__main__':
 
     score = model.evaluate(x_y_test_data, )
 
-    axs[1, 1].scatter(x=x_test, y=y_test, c=label_test)
-    axs[1, 1].set_title('Test labels')
-    axs[1, 0].scatter(x=x_test, y=y_test, c=result)
-    axs[1, 0].set_title('Test model prediction')
+    axs[1, 0].scatter(x=x_test, y=y_test, c=label_test)
+    axs[1, 0].set_title('Test labels')
+    axs[1, 1].scatter(x=x_test, y=y_test, c=result)
+    axs[1, 1].set_title('Test model prediction')
     print(result)
     print(score)
     plt.show()
