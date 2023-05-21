@@ -25,12 +25,20 @@ def create_circle_of_points(amount_of_points, type_class, circle_x, circle_y, ci
         array.append(point)
     return array
 
+def normal(lower, upper):
+    #lower, upper = 3.5, 6
+    mu, sigma = 5, 0.7
+    X = np.random.truncnorm(
+        (lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
+    N = np.random.norm(loc=mu, scale=sigma)
+    return X
 
 def creat_point_in_circle(circle_x, circle_y, circle_r):
     # random angle
-    alpha = 2 * math.pi * np.random.random()
+    alpha = 2 * math.pi * np.random.normal(1)
     # random radius
-    r = circle_r * math.sqrt(np.random.random())
+    t = np.random.normal(1)
+    r = circle_r * math.sqrt(abs(t))
     # calculating coordinates
     x = r * math.cos(alpha) + circle_x
     y = r * math.sin(alpha) + circle_y
